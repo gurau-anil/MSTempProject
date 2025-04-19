@@ -1,0 +1,6 @@
+@MSCheckoutAPI_HostAddress = http://localhost:5125
+
+GET {{MSCheckoutAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
