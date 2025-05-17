@@ -1,6 +1,6 @@
-﻿using MSTempProj.ProjectAPI.Entities;
+﻿using MSTempProj.ProductAPI.Entities;
 
-namespace MSTempProj.ProjectAPI.Repositories.Interfaces
+namespace MSTempProj.ProductAPI.Repositories.Interfaces
 {
     public interface IProductRepository
     {

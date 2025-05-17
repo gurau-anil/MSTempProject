@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MSTempProj.ProjectAPI.Entities;
+using MSTempProj.ProductAPI.Entities;
 
-namespace MSTempProj.ProjectAPI.Data
+namespace MSTempProj.ProductAPI.Data
 {
     public class ProductDbContext : DbContext
     {

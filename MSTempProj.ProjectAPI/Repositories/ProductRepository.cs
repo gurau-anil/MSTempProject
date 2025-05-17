@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MSTempProj.ProjectAPI.Data;
-using MSTempProj.ProjectAPI.Entities;
-using MSTempProj.ProjectAPI.Repositories.Interfaces;
+using MSTempProj.ProductAPI.Data;
+using MSTempProj.ProductAPI.Entities;
+using MSTempProj.ProductAPI.Repositories.Interfaces;
 
-namespace MSTempProj.ProjectAPI.Repositories
+namespace MSTempProj.ProductAPI.Repositories
 {
     public class ProductRepository : IProductRepository
     {

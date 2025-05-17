@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MSTempProj.ProjectAPI.Entities;
-using MSTempProj.ProjectAPI.Repositories.Interfaces;
+using MSTempProj.ProductAPI.Entities;
+using MSTempProj.ProductAPI.Repositories.Interfaces;
 
-namespace MSTempProj.ProjectAPI.Controllers
+namespace MSTempProj.ProductAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

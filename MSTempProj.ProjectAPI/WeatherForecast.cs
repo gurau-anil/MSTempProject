@@ -1,4 +1,4 @@
-namespace MSTempProj.ProjectAPI
+namespace MSTempProj.ProductAPI
 {
     public class WeatherForecast
     {
