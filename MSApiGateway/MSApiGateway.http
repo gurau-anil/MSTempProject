@@ -1,0 +1,6 @@
+@MSApiGateway_HostAddress = http://localhost:5028
+
+GET {{MSApiGateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

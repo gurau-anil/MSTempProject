@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MSTempProj.ProductAPI.Data;
-using MSTempProj.ProductAPI.Entities;
-using MSTempProj.ProductAPI.Repositories.Interfaces;
+using MSProductAPI.Data;
+using MSProductAPI.Entities;
+using MSProductAPI.Repositories.Interfaces;
 
-namespace MSTempProj.ProductAPI.Repositories
+namespace MSProductAPI.Repositories
 {
     public class ProductRepository : IProductRepository
     {
@@ -14,20 +14,42 @@ namespace MSTempProj.ProductAPI.Repositories
             _context = context;
         }
 
+        public async Task<Product> GetByIdAsync(int id){
+
+            return await _context.Products.FindAsync(id);
+        }
+
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _context.Products.ToListAsync();
         }
+            
 
-        public async Task<Product> GetByIdAsync(int id)
+        public async Task<PaginatedResult<Product>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _context.Products.FindAsync(id);
+            var query = _context.Products.AsQueryable();
+
+            var totalCount = await query.CountAsync();
+            var data = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PaginatedResult<Product>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                Data = data
+            };
         }
 
-        public async Task AddAsync(Product product)
+
+        public async Task<Product> CreateAsync(Product product)
         {
-            _context.Products.Add(product);
+            await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
+            return product;
         }
 
         public async Task UpdateAsync(Product product)
@@ -38,7 +60,7 @@ namespace MSTempProj.ProductAPI.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await GetByIdAsync(id);
             if (product != null)
             {
                 _context.Products.Remove(product);
@@ -46,5 +68,4 @@ namespace MSTempProj.ProductAPI.Repositories
             }
         }
     }
-
 }

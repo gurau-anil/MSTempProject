@@ -1,76 +1,79 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MSTempProj.ProductAPI.Entities;
-using MSTempProj.ProductAPI.Repositories.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using MSProductAPI.Entities;
+using MSProductAPI.Services.Interfaces;
 
-namespace MSTempProj.ProductAPI.Controllers
+namespace MSProductAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "ProductApiScope")]
+    [Route("api/product")]
     public class ProductController : ControllerBase
     {
+        private readonly IProductService _productService;
 
-        private readonly IProductRepository _productRepository;
-        private readonly ILogger<ProductController> _logger;
-
-        public ProductController(IProductRepository productRepository, ILogger<ProductController> logger)
+        public ProductController(IProductService productService)
         {
-            _productRepository = productRepository;
-            _logger = logger;
+            _productService = productService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> Get()
+        [Route("get-all")]
+        public async Task<IActionResult> GetAllProducts()
         {
-            _logger.LogInformation("Getting all products");
-            var products = await _productRepository.GetAllAsync();
+            var products = await _productService.GetAllProductsAsync();
             return Ok(products);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> Get(int id)
+        [HttpGet]
+        [Route("get-paged")]
+        public async Task<IActionResult> GetPagedProduct( [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            _logger.LogInformation($"Getting product with id: {id}");
-            var product = await _productRepository.GetByIdAsync(id);
-            if (product == null)
+            try
             {
-                return NotFound();
+                var result = await _productService.GetAllProductsAsync(pageNumber, pageSize);
+                return Ok(new
+                {
+                    result.PageNumber,
+                    result.PageSize,
+                    result.TotalCount,
+                    result.TotalPages,
+                    Data = result.Data
+                });
             }
-            return Ok(product);
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("get/{id:int}")]
+        public async Task<IActionResult> GetProduct(int id)
+        {
+            try
+            {
+                var product = await _productService.GetProductByIdAsync(id);
+                return Ok(product);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,SuperAdmin")] // Only Admins and Super Admins can create
-        public async Task<ActionResult<Product>> Post([FromBody] Product product)
+        [Route("Add")]
+        public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {
-            _logger.LogInformation($"Creating a new product: {product.Name}");
-            await _productRepository.AddAsync(product);
-            return CreatedAtAction(nameof(Get), new { id = product.Id }, product);
-        }
-
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,SuperAdmin")] // Only Admins and Super Admins can update
-        public async Task<IActionResult> Put(int id, [FromBody] Product product)
-        {
-            if (id != product.Id)
+            try
             {
-                return BadRequest();
+                var createdProduct = await _productService.CreateProductAsync(product);
+                return CreatedAtAction(nameof(GetProduct),
+                    new { id = createdProduct.Id }, createdProduct);
             }
-
-            _logger.LogInformation($"Updating product with id: {id}");
-            await _productRepository.UpdateAsync(product);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,SuperAdmin")] // Only Admins and Super Admins can delete
-        public async Task<IActionResult> Delete(int id)
-        {
-            _logger.LogInformation($"Deleting product with id: {id}");
-            await _productRepository.DeleteAsync(id);
-            return NoContent();
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

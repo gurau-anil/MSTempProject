@@ -1,4 +1,4 @@
-﻿namespace MSTempProj.ProductAPI.Entities
+﻿namespace MSProductAPI.Entities
 {
     public class Product
     {

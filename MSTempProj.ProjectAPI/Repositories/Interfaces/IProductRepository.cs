@@ -1,12 +1,14 @@
-﻿using MSTempProj.ProductAPI.Entities;
+﻿using MSProductAPI.Entities;
 
-namespace MSTempProj.ProductAPI.Repositories.Interfaces
+namespace MSProductAPI.Repositories.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetAllAsync();
         Task<Product> GetByIdAsync(int id);
-        Task AddAsync(Product product);
+        Task<IEnumerable<Product>> GetAllAsync();
+        Task<PaginatedResult<Product>> GetAllAsync(int pageNumber, int pageSize);
+
+        Task<Product> CreateAsync(Product product);
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
     }

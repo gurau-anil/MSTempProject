@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace MSTempProj.ProductAPI.Migrations
+namespace MSProductAPI.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration

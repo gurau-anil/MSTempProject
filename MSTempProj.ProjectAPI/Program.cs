@@ -1,5 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using MSTempProj.ProductAPI.Data;
+using MSProductAPI.Data;
+using MSProductAPI.Repositories.Interfaces;
+using MSProductAPI.Repositories;
+using MSProductAPI.Services.Interfaces;
+using MSProductAPI.Services;
+using MSProductAPI.Messaging.Interfaces;
+using MSProductAPI.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +14,13 @@ builder.Services.AddDbContext<ProductDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProductApiConnectionString"));
 });
 
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddSingleton<IRabbitMQPublisher, RabbitMQPublisher>();
+
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
