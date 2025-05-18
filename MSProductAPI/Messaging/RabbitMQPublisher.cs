@@ -35,7 +35,7 @@ namespace MSProductAPI.Messaging
                 var message = JsonConvert.SerializeObject(productEvent);
                 var body = Encoding.UTF8.GetBytes(message);
 
-                await channel.BasicPublishAsync(exchange: "logs", routingKey: string.Empty, body: body);
+                await channel.BasicPublishAsync(exchange: _exchangeName, routingKey: string.Empty, body: body);
 
 
                 Console.WriteLine("[RabbitMQPublisher] Message published successfully.");
