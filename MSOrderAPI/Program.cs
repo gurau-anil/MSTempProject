@@ -1,6 +1,25 @@
+using MSOrderAPI.Data;
+using MSOrderAPI.Messaging.Interfaces;
+using MSOrderAPI.Messaging;
+using MSOrderAPI.Repositories.Interfaces;
+using MSOrderAPI.Repositories;
+using MSOrderAPI.Services.Interfaces;
+using MSOrderAPI.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<OrderDbContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("OrderApiConnectionString"));
+});
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderEventPublisher, RabbitMQOrderPublisher>();
+
+builder.Services.AddHttpClient<IProductInfoService, ProductInfoService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
